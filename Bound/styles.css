@@ -430,7 +430,9 @@
       padding: 0;
       background: none;
     }
-
+    .settings-links {
+        display: none !important;
+    }
     .manuscript {
       max-width: none;
       padding: 40px 0;
@@ -476,7 +478,4 @@
     height: 0;
     margin: 0;
     border: none;
-  }
-  .settings-links {
-    display: none !important;
   }
