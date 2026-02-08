@@ -209,6 +209,29 @@ function injectSettingsLinks(game) {
   console.log(`  Injected settings links into ${game.name}/core.html`);
 }
 
+// Inject back button into settings files
+function injectBackButtons(game) {
+  for (const setting of game.settings) {
+    const settingPath = path.join(ROOT, setting.path);
+    let content = fs.readFileSync(settingPath, 'utf8');
+
+    // Remove existing back-link
+    content = content.replace(/\s*<a class="back-link"[^>]*>[^<]*<\/a>\s*/g, '');
+
+    const backHtml = `<a class="back-link" href="../core.html">\u2190 Back to Core Rules</a>\n`;
+
+    // Insert after opening article tag
+    if (content.includes('<article class="manuscript">')) {
+      content = content.replace('<article class="manuscript">', '<article class="manuscript">\n\n  ' + backHtml);
+    }
+
+    fs.writeFileSync(settingPath, content);
+  }
+  if (game.settings.length > 0) {
+    console.log(`  Injected back buttons into ${game.name}/Settings/`);
+  }
+}
+
 // Main
 console.log('Building TTRPG index...\n');
 
@@ -225,5 +248,8 @@ console.log('  Done');
 
 console.log('\nInjecting settings links into core files...');
 games.forEach(injectSettingsLinks);
+
+console.log('\nInjecting back buttons into settings files...');
+games.forEach(injectBackButtons);
 
 console.log('\nBuild complete!');

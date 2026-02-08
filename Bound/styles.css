@@ -388,6 +388,21 @@
     color: var(--blood);
   }
 
+  /* Back link */
+  .back-link {
+    display: inline-block;
+    font-family: 'IM Fell English SC', serif;
+    font-size: 0.9em;
+    color: var(--gold);
+    text-decoration: none;
+    letter-spacing: 0.1em;
+    margin-bottom: 20px;
+  }
+
+  .back-link:hover {
+    color: var(--blood);
+  }
+
   /* Footer */
   .colophon {
     text-align: center;
@@ -461,4 +476,7 @@
     height: 0;
     margin: 0;
     border: none;
+  }
+  .settings-links {
+    display: none !important;
   }
