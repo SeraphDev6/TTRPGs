@@ -355,6 +355,39 @@
     color: var(--gold-light);
   }
 
+  /* Settings links */
+  .settings-links {
+    text-align: center;
+    margin-top: 50px;
+    padding: 20px 0;
+    border-top: 1px solid var(--divider);
+    border-bottom: 1px solid var(--divider);
+  }
+
+  .settings-label {
+    font-family: 'Cinzel', serif;
+    font-weight: 600;
+    font-size: 0.85em;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--blood);
+    display: block;
+    margin-bottom: 12px;
+  }
+
+  .settings-links a {
+    font-family: 'IM Fell English SC', serif;
+    font-size: 0.95em;
+    color: var(--gold);
+    text-decoration: none;
+    letter-spacing: 0.1em;
+    margin: 0 15px;
+  }
+
+  .settings-links a:hover {
+    color: var(--blood);
+  }
+
   /* Footer */
   .colophon {
     text-align: center;
