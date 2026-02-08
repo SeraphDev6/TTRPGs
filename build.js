@@ -23,7 +23,8 @@ function findGames() {
         name: entry.name,
         path: entry.name,
         corePath: corePath,
-        settings: findSettings(gameDir, entry.name)
+        settings: findSubcontent(gameDir, entry.name, 'Settings'),
+        expansions: findSubcontent(gameDir, entry.name, 'Expansions')
       };
 
       // Extract title and description from core.html
@@ -41,39 +42,39 @@ function findGames() {
   return games;
 }
 
-// Find all settings for a game
-function findSettings(gameDir, gameName) {
-  const settings = [];
-  const settingsDir = path.join(gameDir, 'Settings');
+// Find all subcontent (Settings or Expansions) for a game
+function findSubcontent(gameDir, gameName, folderName) {
+  const items = [];
+  const subDir = path.join(gameDir, folderName);
 
-  if (!fs.existsSync(settingsDir)) return settings;
+  if (!fs.existsSync(subDir)) return items;
 
-  const entries = fs.readdirSync(settingsDir, { withFileTypes: true });
+  const entries = fs.readdirSync(subDir, { withFileTypes: true });
 
   for (const entry of entries) {
     if (!entry.isFile() || !entry.name.endsWith('.html')) continue;
 
-    const settingPath = path.join(settingsDir, entry.name);
-    const content = fs.readFileSync(settingPath, 'utf8');
+    const itemPath = path.join(subDir, entry.name);
+    const content = fs.readFileSync(itemPath, 'utf8');
 
     const titleMatch = content.match(/<h1>([^<]+)<\/h1>/);
     const name = titleMatch ? titleMatch[1] : entry.name.replace('.html', '');
 
-    settings.push({
+    items.push({
       name: name,
       file: entry.name,
-      path: `${gameName}/Settings/${entry.name}`
+      path: `${gameName}/${folderName}/${entry.name}`
     });
   }
 
-  return settings;
+  return items;
 }
 
-// Generate index.html
+// Generate index.html (shows Expansions, not Settings)
 function generateIndex(games) {
   const gameListItems = games.map(game => {
-    const settingLinks = game.settings.map(s =>
-      `        <a href="${s.path}">${s.name}</a>`
+    const expansionLinks = game.expansions.map(e =>
+      `        <a href="${e.path}">${e.name}</a>`
     ).join('\n');
 
     return `    <li>
@@ -81,7 +82,7 @@ function generateIndex(games) {
       <p class="game-desc">${game.subtitle}</p>
       <div class="game-links">
         <a href="${game.path}/core.html">Core Rules</a>
-${settingLinks}
+${expansionLinks}
       </div>
     </li>`;
   }).join('\n');
@@ -214,7 +215,7 @@ console.log('Building TTRPG index...\n');
 const games = findGames();
 console.log(`Found ${games.length} game(s):`);
 games.forEach(g => {
-  console.log(`  - ${g.title} (${g.settings.length} setting(s))`);
+  console.log(`  - ${g.title} (${g.settings.length} setting(s), ${g.expansions.length} expansion(s))`);
 });
 
 console.log('\nGenerating index.html...');
