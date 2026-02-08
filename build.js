@@ -77,14 +77,10 @@ function generateIndex(games) {
       `        <a href="${e.path}">${e.name}</a>`
     ).join('\n');
 
-    return `    <li>
-      <div class="game-title"><a href="${game.path}/core.html">${game.title}</a></div>
+    return `    <a href="${game.path}/core.html" class="game-card">
+      <div class="game-title">${game.title}</div>
       <p class="game-desc">${game.subtitle}</p>
-      <div class="game-links">
-        <a href="${game.path}/core.html">Core Rules</a>
-${expansionLinks}
-      </div>
-    </li>`;
+    </a>`;
   }).join('\n');
 
   return `<!DOCTYPE html>
@@ -100,16 +96,22 @@ ${expansionLinks}
     list-style: none;
     padding: 0;
     margin: 40px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
   }
 
-  .game-list li {
-    margin-bottom: 30px;
-    padding-bottom: 30px;
-    border-bottom: 1px solid var(--divider);
+  .game-card {
+    display: block;
+    padding: 24px;
+    border: 1px solid var(--divider);
+    background: var(--parchment-dark);
+    text-decoration: none;
+    transition: border-color 0.2s;
   }
 
-  .game-list li:last-child {
-    border-bottom: none;
+  .game-card:hover {
+    border-color: var(--gold);
   }
 
   .game-title {
@@ -122,36 +124,9 @@ ${expansionLinks}
     margin-bottom: 8px;
   }
 
-  .game-title a {
-    color: inherit;
-    text-decoration: none;
-  }
-
-  .game-title a:hover {
-    color: var(--gold);
-  }
-
   .game-desc {
-    margin-bottom: 12px;
+    margin-bottom: 0;
     color: var(--grey-text);
-  }
-
-  .game-links {
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
-  }
-
-  .game-links a {
-    font-family: 'IM Fell English SC', serif;
-    font-size: 0.9em;
-    color: var(--gold);
-    text-decoration: none;
-    letter-spacing: 0.1em;
-  }
-
-  .game-links a:hover {
-    color: var(--blood);
   }
 </style>
 </head>
@@ -163,9 +138,9 @@ ${expansionLinks}
     <div class="subtitle">A Collection of Tabletop Games</div>
   </div>
 
-  <ul class="game-list">
+  <div class="game-list">
 ${gameListItems}
-  </ul>
+  </div>
 
   <div class="ornament">❧ ❧ ❧</div>
 

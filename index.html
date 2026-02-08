@@ -11,16 +11,22 @@
     list-style: none;
     padding: 0;
     margin: 40px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
   }
 
-  .game-list li {
-    margin-bottom: 30px;
-    padding-bottom: 30px;
-    border-bottom: 1px solid var(--divider);
+  .game-card {
+    display: block;
+    padding: 24px;
+    border: 1px solid var(--divider);
+    background: var(--parchment-dark);
+    text-decoration: none;
+    transition: border-color 0.2s;
   }
 
-  .game-list li:last-child {
-    border-bottom: none;
+  .game-card:hover {
+    border-color: var(--gold);
   }
 
   .game-title {
@@ -33,36 +39,9 @@
     margin-bottom: 8px;
   }
 
-  .game-title a {
-    color: inherit;
-    text-decoration: none;
-  }
-
-  .game-title a:hover {
-    color: var(--gold);
-  }
-
   .game-desc {
-    margin-bottom: 12px;
+    margin-bottom: 0;
     color: var(--grey-text);
-  }
-
-  .game-links {
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
-  }
-
-  .game-links a {
-    font-family: 'IM Fell English SC', serif;
-    font-size: 0.9em;
-    color: var(--gold);
-    text-decoration: none;
-    letter-spacing: 0.1em;
-  }
-
-  .game-links a:hover {
-    color: var(--blood);
   }
 </style>
 </head>
@@ -74,16 +53,12 @@
     <div class="subtitle">A Collection of Tabletop Games</div>
   </div>
 
-  <ul class="game-list">
-    <li>
-      <div class="game-title"><a href="Bound/core.html">Bound</a></div>
+  <div class="game-list">
+    <a href="Bound/core.html" class="game-card">
+      <div class="game-title">Bound</div>
       <p class="game-desc">A Game of Oaths &amp; Loopholes</p>
-      <div class="game-links">
-        <a href="Bound/core.html">Core Rules</a>
-
-      </div>
-    </li>
-  </ul>
+    </a>
+  </div>
 
   <div class="ornament">❧ ❧ ❧</div>
 
