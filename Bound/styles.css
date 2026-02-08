@@ -462,7 +462,7 @@
     }
 
     a {
-      display: none;
+      display: none !important;
     }
 
     .pagebreak {
