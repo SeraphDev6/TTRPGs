@@ -351,6 +351,15 @@
     flex: 1;
   }
 
+  .def.grey .def-term {
+    color: var(--grey-text);
+  }
+
+  .def.grey .def-desc {
+    color: var(--grey-text);
+    font-style: italic;
+  }
+
   .clause .def-term, .clause.dark .def-term, .clause.ember .def-term {
     color: var(--gold-light);
   }

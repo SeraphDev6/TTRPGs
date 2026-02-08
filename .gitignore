@@ -1,0 +1,3 @@
+# Ignore Markdown files used for notes
+*.md
+!README.md
