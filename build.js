@@ -150,45 +150,68 @@ ${gameListItems}
 `;
 }
 
-// Inject settings links into core.html
-function injectSettingsLinks(game) {
-  if (game.settings.length === 0) return;
+// Inject settings and expansion links into core.html
+function injectContentLinks(game) {
+  if (game.settings.length === 0 && game.expansions.length === 0) return;
 
   let content = fs.readFileSync(game.corePath, 'utf8');
 
-  // Remove existing settings-links section
-  content = content.replace(/\s*<div class="settings-links">[\s\S]*?<\/div>\s*(?=<div class="ornament">|<div class="colophon">|<\/article>)/g, '\n\n  ');
+  // Remove existing settings-links sections (there may be multiple)
+  content = content.replace(/\s*<div class="settings-links">[\s\S]*?<\/div>\s*(?=<div class="settings-links">|<div class="ornament">|<div class="colophon">|<\/article>)/g, '\n\n  ');
 
-  // Build settings links HTML
-  const links = game.settings.map(s =>
-    `<a href="Settings/${s.file}">${s.name}</a>`
-  ).join('\n    ');
+  let linksHtml = '';
 
-  const settingsHtml = `<div class="settings-links">
+  // Build settings links
+  if (game.settings.length > 0) {
+    const settingsLinks = game.settings.map(s =>
+      `<a href="Settings/${s.file}">${s.name}</a>`
+    ).join('\n    ');
+
+    linksHtml += `<div class="settings-links">
     <span class="settings-label">Settings</span>
-    ${links}
+    ${settingsLinks}
   </div>
 
   `;
+  }
+
+  // Build expansion links
+  if (game.expansions.length > 0) {
+    const expansionLinks = game.expansions.map(e =>
+      `<a href="Expansions/${e.file}">${e.name}</a>`
+    ).join('\n    ');
+
+    linksHtml += `<div class="settings-links">
+    <span class="settings-label">Expansions</span>
+    ${expansionLinks}
+  </div>
+
+  `;
+  }
 
   // Insert before ornament, colophon, or closing article
   if (content.includes('<div class="ornament">')) {
-    content = content.replace('<div class="ornament">', settingsHtml + '<div class="ornament">');
+    content = content.replace('<div class="ornament">', linksHtml + '<div class="ornament">');
   } else if (content.includes('<div class="colophon">')) {
-    content = content.replace('<div class="colophon">', settingsHtml + '<div class="colophon">');
+    content = content.replace('<div class="colophon">', linksHtml + '<div class="colophon">');
   } else {
-    content = content.replace('</article>', settingsHtml + '</article>');
+    content = content.replace('</article>', linksHtml + '</article>');
   }
 
   fs.writeFileSync(game.corePath, content);
-  console.log(`  Injected settings links into ${game.name}/core.html`);
+  console.log(`  Injected content links into ${game.name}/core.html`);
 }
 
-// Inject back button into settings files
+// Inject back button into settings and expansion files
 function injectBackButtons(game) {
-  for (const setting of game.settings) {
-    const settingPath = path.join(ROOT, setting.path);
-    let content = fs.readFileSync(settingPath, 'utf8');
+  const allContent = [
+    ...game.settings.map(s => ({ ...s, folder: 'Settings' })),
+    ...game.expansions.map(e => ({ ...e, folder: 'Expansions' }))
+  ];
+
+  for (const item of allContent) {
+    const itemPath = path.join(ROOT, item.path);
+    let content = fs.readFileSync(itemPath, 'utf8');
 
     // Remove existing back-link
     content = content.replace(/\s*<a class="back-link"[^>]*>[^<]*<\/a>\s*/g, '');
@@ -200,10 +223,13 @@ function injectBackButtons(game) {
       content = content.replace('<article class="manuscript">', '<article class="manuscript">\n\n  ' + backHtml);
     }
 
-    fs.writeFileSync(settingPath, content);
+    fs.writeFileSync(itemPath, content);
   }
   if (game.settings.length > 0) {
     console.log(`  Injected back buttons into ${game.name}/Settings/`);
+  }
+  if (game.expansions.length > 0) {
+    console.log(`  Injected back buttons into ${game.name}/Expansions/`);
   }
 }
 
@@ -221,10 +247,10 @@ const indexHtml = generateIndex(games);
 fs.writeFileSync(path.join(ROOT, 'index.html'), indexHtml);
 console.log('  Done');
 
-console.log('\nInjecting settings links into core files...');
-games.forEach(injectSettingsLinks);
+console.log('\nInjecting content links into core files...');
+games.forEach(injectContentLinks);
 
-console.log('\nInjecting back buttons into settings files...');
+console.log('\nInjecting back buttons into settings and expansion files...');
 games.forEach(injectBackButtons);
 
 console.log('\nBuild complete!');
