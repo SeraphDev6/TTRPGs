@@ -412,6 +412,40 @@
     color: var(--blood);
   }
 
+  /* Sibling navigation (prev/next between settings or expansions) */
+  .sibling-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 50px;
+    padding-top: 20px;
+    border-top: 1px solid var(--divider);
+  }
+
+  .sibling-nav a {
+    font-family: 'IM Fell English SC', serif;
+    font-size: 0.9em;
+    color: var(--gold);
+    text-decoration: none;
+    letter-spacing: 0.08em;
+  }
+
+  .sibling-nav a:hover {
+    color: var(--blood);
+  }
+
+  .sibling-nav .nav-prev::before {
+    content: "\2190\00a0";
+  }
+
+  .sibling-nav .nav-next::after {
+    content: "\00a0\2192";
+  }
+
+  .sibling-nav .nav-spacer {
+    flex: 1;
+  }
+
   /* Footer */
   .colophon {
     text-align: center;
@@ -440,6 +474,9 @@
       background: none;
     }
     .settings-links {
+        display: none !important;
+    }
+    .sibling-nav {
         display: none !important;
     }
     .manuscript {
