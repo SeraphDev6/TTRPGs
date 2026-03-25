@@ -233,6 +233,55 @@ function injectBackButtons(game) {
   }
 }
 
+// Inject prev/next sibling navigation into settings and expansion files
+function injectSiblingNav(game) {
+  const groups = [
+    { items: game.settings, folder: 'Settings' },
+    { items: game.expansions, folder: 'Expansions' }
+  ];
+
+  for (const group of groups) {
+    if (group.items.length < 2) continue;
+
+    for (let i = 0; i < group.items.length; i++) {
+      const item = group.items[i];
+      const prev = i > 0 ? group.items[i - 1] : null;
+      const next = i < group.items.length - 1 ? group.items[i + 1] : null;
+
+      const itemPath = path.join(ROOT, item.path);
+      let content = fs.readFileSync(itemPath, 'utf8');
+
+      // Remove existing sibling-nav
+      content = content.replace(/\s*<nav class="sibling-nav">[\s\S]*?<\/nav>\s*/g, '\n');
+
+      // Build nav HTML
+      let navHtml = '\n  <nav class="sibling-nav">\n';
+      if (prev) {
+        navHtml += `    <a class="nav-prev" href="${prev.file}">${prev.name}</a>\n`;
+      } else {
+        navHtml += `    <span class="nav-spacer"></span>\n`;
+      }
+      if (next) {
+        navHtml += `    <a class="nav-next" href="${next.file}">${next.name}</a>\n`;
+      } else {
+        navHtml += `    <span class="nav-spacer"></span>\n`;
+      }
+      navHtml += '  </nav>\n';
+
+      // Insert before </article> or before ornament/colophon
+      if (content.includes('<div class="ornament">')) {
+        content = content.replace('<div class="ornament">', navHtml + '\n  <div class="ornament">');
+      } else if (content.includes('</article>')) {
+        content = content.replace('</article>', navHtml + '\n</article>');
+      }
+
+      fs.writeFileSync(itemPath, content);
+    }
+
+    console.log(`  Injected sibling nav into ${game.name}/${group.folder}/ (${group.items.length} pages)`);
+  }
+}
+
 // Main
 console.log('Building TTRPG index...\n');
 
@@ -252,5 +301,8 @@ games.forEach(injectContentLinks);
 
 console.log('\nInjecting back buttons into settings and expansion files...');
 games.forEach(injectBackButtons);
+
+console.log('\nInjecting sibling navigation...');
+games.forEach(injectSiblingNav);
 
 console.log('\nBuild complete!');
